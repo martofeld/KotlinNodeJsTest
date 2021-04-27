@@ -5,27 +5,6 @@ import org.jetbrains.kotlin.gradle.targets.js.dukat.DukatTask
 import org.jetbrains.kotlin.gradle.targets.js.dukat.IntegratedDukatTask
 import org.jetbrains.kotlin.gradle.targets.js.npm.npmProject
 
-plugins {
-    kotlin("js")
-}
-
-group = "com.mfeldsztejn"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    jcenter()
-    mavenCentral()
-}
-
-kotlin {
-    js(LEGACY) {
-        nodejs {
-        }
-        binaries.executable()
-        useCommonJs()
-    }
-}
-
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-nodejs:0.0.7")
     implementation(project(":googleapis-common"))
@@ -36,14 +15,18 @@ val removeKtxNodejsFiles = tasks.create("removeKtxNodejsFiles").apply {
     dependsOn(tasks.findByName("generateExternalsIntegrated"))
     doFirst {
         val overrodeFiles =
-            listOf(
-                "index.EventTarget.module_event-target-shim.kt",
-                "index.module_event-target-shim.kt",
-                "lib.es5.kt",
-                "lib.es2015.collection.kt",
-                "lib.es2015.iterable.kt"
-            ) +
+                    listOf(
+                        "index.EventTarget.module_event-target-shim.kt",
+                        "index.module_event-target-shim.kt",
+                        "dns.dns.resolveCaa.module_node.kt",
+                        "globals.NodeJS.module_node.kt",
+                        "lib.es5.kt",
+                        "lib.dom.kt",
+                        "lib.es2018.asynciterable.module_dukat.kt"
+                    ) +
                     (File(project.projectDir, "../googleapis-common/src/main/kotlin/com/mfeldsztejn/kjs/googleapis/common").listFiles()
+                        ?.map { it.name } ?: emptyList()) +
+                    (File(project.projectDir, "../googleapis-common/src/main/kotlin/com/mfeldsztejn/kjs/gaxios").listFiles()
                         ?.map { it.name } ?: emptyList()) +
                     (File(project.projectDir, "../googleapis-common/src/main/kotlin/com/mfeldsztejn/kjs/googleapis/auth").listFiles()
                         ?.map { it.name } ?: emptyList()) +
@@ -63,9 +46,12 @@ val fixPackages = tasks.create("fixPackages").apply {
     doFirst {
         File(project.buildDir, "externals/${rootProject.name}-${project.name}/src").listFiles()?.forEach { file ->
             val newLines = file.readLines().toMutableList().apply {
-                add(2, "package com.mfeldsztejn.kjs.googleapis.sheets")
-                add(3, "import com.mfeldsztejn.kjs.gaxios.*")
-                add(4, "import com.mfeldsztejn.kjs.googleapis.auth.*")
+                if(none { it.startsWith("package") }) {
+                    val index = indexOfFirst { it.startsWith("import") }
+                    add(index - 1, "package com.mfeldsztejn.kjs.googleapis.sheets")
+                }
+                add(5, "import com.mfeldsztejn.kjs.gaxios.*")
+                add(6, "import com.mfeldsztejn.kjs.googleapis.auth.*")
             }
             file.writer().use { writter ->
                 newLines.forEach {

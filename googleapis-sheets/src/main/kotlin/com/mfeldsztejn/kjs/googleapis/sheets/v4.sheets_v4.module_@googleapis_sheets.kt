@@ -2255,7 +2255,7 @@ external interface `Schema$PivotGroupValueMetadata` {
         set(value) = definedExternally
 }
 
-external interface `T$11` {
+external interface `CriteriaHolder` {
     @nativeGetter
     operator fun get(key: String): `Schema$PivotFilterCriteria`?
     @nativeSetter
@@ -2266,7 +2266,7 @@ external interface `Schema$PivotTable` {
     var columns: Array<`Schema$PivotGroup`>?
         get() = definedExternally
         set(value) = definedExternally
-    var criteria: `T$11`?
+    var criteria: `CriteriaHolder`?
         get() = definedExternally
         set(value) = definedExternally
     var dataExecutionStatus: `Schema$DataExecutionStatus`?

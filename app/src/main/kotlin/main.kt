@@ -21,6 +21,7 @@ fun main() {
     app.get("/asd") { req, res, next ->
 
     }
+
     /*app.use(RequestHandler { req, res, next ->
         println("Incoming message ${req.url}")
         next()
