@@ -1,16 +1,7 @@
-import NodeJS.ErrnoException
-import com.mfeldsztejn.kjs.express.express
+
 import com.mfeldsztejn.kjs.express.Router
+import com.mfeldsztejn.kjs.express.express
 import com.mfeldsztejn.kjs.express.get
-import com.mfeldsztejn.kjs.express.internal.*
-import com.mfeldsztejn.kjs.googleapis.auth.GenerateAuthUrlOpts
-import com.mfeldsztejn.kjs.googleapis.auth.GoogleAuth
-import com.mfeldsztejn.kjs.googleapis.auth.OAuth2Client
-import com.mfeldsztejn.kjs.googleapis.sheets.Options
-import com.mfeldsztejn.kjs.googleapis.sheets.auth
-import com.mfeldsztejn.kjs.googleapis.sheets.sheets
-import fs.readFile
-import kotlin.js.Promise
 
 fun main() {
     println(greeting("TestingKotlinNode"))
@@ -31,10 +22,12 @@ fun main() {
         res.status(200).send("Pong")
     })*/
 
-    app.get("/pingo", ::handler)
-
     app.get("/pinge") { req, res, _ ->
         res.status(200).send("asdfsadf")
+    }
+
+    app.get("/pingu") { req, res, _ ->
+        res.status(500).send("Something went wrong")
     }
 
     val router2 = Router()
@@ -62,12 +55,8 @@ fun main() {
     }
 }
 
-fun handler(req: Request__0, res: Response__0, next: NextFunction) {
-    res.status(200).send("Pong")
-}
-
 fun authorize()/*: Promise<GoogleAuth>*/ {
-    Promise<String> { resolve, reject ->
+    /*Promise<String> { resolve, reject ->
         fs.readFile("../../../../src/main/resources/credentials.json") { err, data ->
             if(err != null) reject(err)
             else resolve(data.toString("utf-8"))
@@ -78,7 +67,7 @@ fun authorize()/*: Promise<GoogleAuth>*/ {
         println(credentials.client_secret)
         println(credentials.client_id)
         println(credentials.redirect_uris)
-    }
+    }*/
 //    (fs.readFile("../../../../src/main/resources/credentials.json") as Promise<Buffer>)
     /*fs.readFile("../../../../src/main/resources/credentials.json") { err, data ->
         if (err != null)

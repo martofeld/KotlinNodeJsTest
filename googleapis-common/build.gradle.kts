@@ -1,11 +1,9 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
-import org.jetbrains.kotlin.gradle.targets.js.dukat.DukatExecutor
-import org.jetbrains.kotlin.gradle.targets.js.dukat.DukatRunner
-import org.jetbrains.kotlin.gradle.targets.js.dukat.DukatTask
-import org.jetbrains.kotlin.gradle.targets.js.dukat.IntegratedDukatTask
-import org.jetbrains.kotlin.gradle.targets.js.npm.npmProject
+kotlin {
+    jsLibraryTargets()
+}
 
 dependencies {
+    implementation(kotlin("stdlib-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-nodejs:0.0.7")
     implementation(npm("googleapis-common", "^5.0.1", generateExternals = true))
 }
@@ -17,10 +15,8 @@ val removeKtxNodejsFiles = tasks.create("removeKtxNodejsFiles").apply {
             listOf(
                 "index.EventTarget.module_event-target-shim.kt",
                 "index.module_event-target-shim.kt",
-                "dns.dns.resolveCaa.module_node.kt",
                 "globals.NodeJS.module_node.kt",
                 "lib.es5.kt",
-                "lib.dom.kt",
                 "lib.es2018.asynciterable.module_dukat.kt"
             ) +
                     (File(project.projectDir, "src/main/kotlin/com/mfeldsztejn/kjs/googleapis/common").listFiles()

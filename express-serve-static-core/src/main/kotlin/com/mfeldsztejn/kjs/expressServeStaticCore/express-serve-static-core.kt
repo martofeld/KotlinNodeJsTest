@@ -3,24 +3,13 @@
 package com.mfeldsztejn.kjs.expressServeStaticCore
 
 import QueryString.ParsedQs
+import events.EventEmitter.EventEmitter
+import tsstdlib.Record
+import kotlin.js.Date
+import kotlin.js.RegExp
 import com.mfeldsztejn.kjs.expressServeStaticCore.internal.Application as InternalApplication
 import com.mfeldsztejn.kjs.expressServeStaticCore.internal.Request as InternalRequest
 import com.mfeldsztejn.kjs.expressServeStaticCore.internal.Response as InternalResponse
-import events.EventEmitter.EventEmitter
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
-import tsstdlib.Record
 
 typealias Query = ParsedQs
 
@@ -58,7 +47,10 @@ external interface RequestHandler__1<P> : RequestHandler<P, Any, Any, ParsedQs, 
 
 external interface RequestHandler__0 : RequestHandler<ParamsDictionary, Any, Any, ParsedQs, Record<String, Any>>
 
-typealias ErrorRequestHandler<P, ResBody, ReqBody, ReqQuery, Locals> = (err: Any, req: Request<P, ResBody, ReqBody, ReqQuery, Locals>, res: Response__2<ResBody, Locals>, next: NextFunction) -> Unit
+external interface ErrorRequestHandler<P, ResBody, ReqBody, ReqQuery, Locals: Record<String, Any>> {
+    @nativeInvoke
+    operator fun invoke(err: Any, req: Request<P, ResBody, ReqBody, ReqQuery, Locals>, res: Response__2<ResBody, Locals>, next: NextFunction): Any
+}
 
 external interface IRouterMatcher<T, Method: String> {
     @nativeInvoke
@@ -125,7 +117,7 @@ external interface IRouter : RequestHandler__0 {
     var trace: IRouterMatcher__1<IRouter /* this */>
     var unlock: IRouterMatcher__1<IRouter /* this */>
     var unsubscribe: IRouterMatcher__1<IRouter /* this */>
-    var use: IRouterHandler<IRouter /* this */> /* IRouterHandler<IRouter /* this */> & IRouterMatcher__1<IRouter /* this */> */
+    var use: IRouterMatcher__1<IRouter /* this */> /* IRouterHandler<IRouter /* this */> & IRouterMatcher__1<IRouter /* this */> */
     fun route(prefix: String): IRoute
     fun route(prefix: RegExp): IRoute
     fun route(prefix: Array<Any /* String | RegExp */>): IRoute
@@ -203,7 +195,10 @@ external interface ByteRange {
 
 external interface RequestRanges
 
-typealias Errback = (err: Error) -> Unit
+external interface Errback {
+    @nativeInvoke
+    operator fun invoke(err: Error)
+}
 
 external interface Request<P, ResBody, ReqBody, ReqQuery, Locals : Record<String, Any>> : http.IncomingMessage, InternalRequest {
     fun get(name: String /* "set-cookie" */): dynamic /* Array | String */
@@ -331,7 +326,10 @@ external interface Response__0 : Response<Any, Record<String, Any>, Number>
 
 external interface Handler : RequestHandler__0
 
-typealias RequestParamHandler = (req: Request__0, res: Response__0, next: NextFunction, value: Any, name: String) -> Any
+external interface RequestParamHandler {
+    @nativeInvoke
+    operator fun invoke(req: Request__0, res: Response__0, next: NextFunction, value: Any, name: String): Any
+}
 
 external interface Application : EventEmitter, IRouter, InternalApplication {
     @nativeInvoke
@@ -377,7 +375,7 @@ external interface Application : EventEmitter, IRouter, InternalApplication {
     var locals: Record<String, Any>
     var routes: Any
     var _router: Any
-    override var use: IRouterHandler<IRouter> /* IRouterHandler<Application> & IRouterMatcher__1<Application> & (handlers: dynamic /* RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>> | ErrorRequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>> | Array<dynamic /* RequestHandler__1<ParamsDictionary> | ErrorRequestHandler<ParamsDictionary> */> */) -> Application */
+    override var use: IRouterMatcher__1<IRouter> /* IRouterHandler<Application> & IRouterMatcher__1<Application> & (handlers: dynamic /* RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>> | ErrorRequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>> | Array<dynamic /* RequestHandler__1<ParamsDictionary> | ErrorRequestHandler<ParamsDictionary> */> */) -> Application */
     var on: (event: String, callback: (parent: Application) -> Unit) -> Application
     var mountpath: dynamic /* String | Array<String> */
         get() = definedExternally
